@@ -45,7 +45,10 @@ Plans:
   3. Agent can list tasks filtered by project, board, column, or assignee — with pagination returning at most 20 by default
   4. Agent can retrieve full details of a single task by ID
   5. Agent can list comments on a task
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 02-read-tools/02-01-PLAN.md — Navigation tools (list_projects, get_project, list_boards, list_board_columns) + shared helpers
+- [ ] 02-read-tools/02-02-PLAN.md — Task + comment tools (list_tasks with filters+pagination, get_task, list_task_comments)
 
 ### Phase 3: Write Tools
 **Goal**: Agents can take action — creating tasks, updating task fields, moving tasks between columns, completing or reopening tasks, and posting comments
@@ -79,6 +82,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-04-09 |
-| 2. Read Tools | 0/? | Not started | - |
+| 2. Read Tools | 1/2 | In Progress|  |
 | 3. Write Tools | 0/? | Not started | - |
 | 4. Distribution & Quality | 0/? | Not started | - |

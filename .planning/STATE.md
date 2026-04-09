@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: verifying
-stopped_at: Completed 01-03-PLAN.md (MCP server entry point + tool groups + boot test)
-last_updated: "2026-04-09T13:23:47.367Z"
+stopped_at: Completed 02-01-PLAN.md (Navigation read tools + shared helpers)
+last_updated: "2026-04-09T13:42:23.166Z"
 last_activity: 2026-04-09
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 5
+  completed_plans: 4
   percent: 0
 ---
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P01 | 2 | 3 tasks | 6 files |
 | Phase 01-foundation P02 | 3 | 3 tasks | 5 files |
 | Phase 01-foundation P03 | 5 | 3 tasks | 4 files |
+| Phase 02-read-tools P01 | 12 | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,9 @@ Recent decisions affecting current work:
 - [Phase 01-03]: McpServer constructor: new McpServer({ name, version }) — pattern for Phase 2/3 tool registration consistency
 - [Phase 01-03]: register*Tools params prefixed with _ — ESLint argsIgnorePattern allows intentionally empty Phase 1 stubs
 - [Phase 01-03]: eslint.config.js added — ESLint 9 dropped .eslintrc.json support, no-console enforcement was broken
+- [Phase 02-read-tools]: server.registerTool(name, {description, inputSchema}, cb) used — non-deprecated MCP SDK v1.29 API (server.tool() is marked @deprecated in d.ts)
+- [Phase 02-read-tools]: inputSchema is ZodRawShapeCompat (plain object of Zod schemas), NOT z.object() — MCP SDK v1.29 convention
+- [Phase 02-read-tools]: extractArray falls back to first array in response if named key absent — defensive against undocumented WEEEK API shape
 
 ### Pending Todos
 
@@ -88,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T13:23:47.365Z
-Stopped at: Completed 01-03-PLAN.md (MCP server entry point + tool groups + boot test)
+Last session: 2026-04-09T13:42:23.163Z
+Stopped at: Completed 02-01-PLAN.md (Navigation read tools + shared helpers)
 Resume file: None
