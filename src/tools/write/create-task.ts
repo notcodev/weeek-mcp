@@ -61,13 +61,13 @@ const inputSchema = {
     .string()
     .min(1)
     .describe(
-      "WEEEK user ID to assign the task to. Optional. Single assignee."
+      "WEEEK user UUID to assign as primary. Optional. Obtain from weeek_list_workspace_members — do not guess IDs."
     )
     .optional(),
-  due_date: z
+  date_end: z
     .string()
     .describe(
-      "Due date in ISO 8601 format (e.g. 2026-04-15 or 2026-04-15T12:00:00Z). Optional."
+      "Due date in ISO 8601 format (e.g. 2026-04-15 or 2026-04-15T12:00:00Z). Optional. WEEEK's task model uses dateEnd, not dueDate."
     )
     .optional(),
 };
@@ -91,7 +91,7 @@ export function registerCreateTask(
       board_column_id?: string;
       priority?: number;
       assignee_id?: string;
-      due_date?: string;
+      date_end?: string;
     }) => {
       try {
         const body: Record<string, unknown> = {
@@ -103,8 +103,8 @@ export function registerCreateTask(
         if (args.board_column_id !== undefined)
           body.boardColumnId = args.board_column_id;
         if (args.priority !== undefined) body.priority = args.priority;
-        if (args.assignee_id !== undefined) body.assigneeId = args.assignee_id;
-        if (args.due_date !== undefined) body.dueDate = args.due_date;
+        if (args.assignee_id !== undefined) body.userId = args.assignee_id;
+        if (args.date_end !== undefined) body.dateEnd = args.date_end;
 
         const raw = await client.post<unknown>("/tm/tasks", body);
         const task = unwrapTask(raw);

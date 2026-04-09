@@ -69,26 +69,31 @@ describe("weeek_list_tasks tool", () => {
     expect(desc).toMatch(/pagination/i);
   });
 
-  it("shapes raw tasks correctly including assigneesIds fallback", async () => {
+  it("shapes raw tasks using userId and assignees array per WEEEK schema", async () => {
     const client = makeFakeClient(async () => ({
       tasks: [
         {
-          id: 1,
+          id: 4017,
           title: "Alpha",
-          projectId: "p1",
-          boardId: "b1",
-          boardColumnId: "c1",
-          assigneeId: "u1",
+          type: "action",
+          projectId: 76,
+          boardId: 181,
+          boardColumnId: 574,
+          userId: "a0f583cb-b8a9-4408-a822-c05213b3fb91",
+          assignees: ["a0f583cb-b8a9-4408-a822-c05213b3fb91"],
+          authorId: "a10dd031-807b-49c0-a595-fa7db986b129",
           isCompleted: false,
           priority: 2,
-          dueDate: "2026-05-01",
-          createdAt: "2026-01-01",
+          dateEnd: "2026-05-01",
+          updatedAt: "2026-04-08T07:32:46Z",
+          tags: [39, 42],
         },
         {
           id: "t2",
           title: "Beta",
           isCompleted: true,
-          assigneesIds: ["u2", "u3"],
+          // No userId — falls back to first assignee
+          assignees: ["u2", "u3"],
         },
       ],
     }));
@@ -101,34 +106,38 @@ describe("weeek_list_tasks tool", () => {
       tasks: Array<{
         id: string;
         title: string;
+        type: string | null;
         projectId: string | null;
         boardId: string | null;
         boardColumnId: string | null;
         assigneeId: string | null;
+        assigneeIds: string[];
+        authorId: string | null;
         isCompleted: boolean;
         priority: string | null;
-        dueDate: string | null;
-        createdAt: string | null;
+        dateStart: string | null;
+        dateEnd: string | null;
+        tags: string[];
+        updatedAt: string | null;
       }>;
       count: number;
       hasMore: boolean;
     };
     expect(payload.count).toBe(2);
-    expect(payload.tasks[0]).toEqual({
-      id: "1",
-      title: "Alpha",
-      projectId: "p1",
-      boardId: "b1",
-      boardColumnId: "c1",
-      assigneeId: "u1",
-      isCompleted: false,
-      priority: "2",
-      dueDate: "2026-05-01",
-      createdAt: "2026-01-01",
-    });
-    // assigneesIds[0] is used when assigneeId is missing
+    expect(payload.tasks[0]!.id).toBe("4017");
+    expect(payload.tasks[0]!.projectId).toBe("76");
+    expect(payload.tasks[0]!.assigneeId).toBe(
+      "a0f583cb-b8a9-4408-a822-c05213b3fb91"
+    );
+    expect(payload.tasks[0]!.assigneeIds).toEqual([
+      "a0f583cb-b8a9-4408-a822-c05213b3fb91",
+    ]);
+    expect(payload.tasks[0]!.type).toBe("action");
+    expect(payload.tasks[0]!.dateEnd).toBe("2026-05-01");
+    expect(payload.tasks[0]!.tags).toEqual(["39", "42"]);
+    // When userId is absent, first assignee from array is used
     expect(payload.tasks[1]!.assigneeId).toBe("u2");
-    expect(payload.tasks[1]!.isCompleted).toBe(true);
+    expect(payload.tasks[1]!.assigneeIds).toEqual(["u2", "u3"]);
   });
 
   it("maps snake_case filter args to camelCase query params", async () => {
@@ -155,7 +164,8 @@ describe("weeek_list_tasks tool", () => {
     expect(query.projectId).toBe("p1");
     expect(query.boardId).toBe("b1");
     expect(query.boardColumnId).toBe("c1");
-    expect(query.assigneeId).toBe("u1");
+    // WEEEK uses userId as the assignee filter param, not assigneeId
+    expect(query.userId).toBe("u1");
     expect(query.isCompleted).toBe(false);
     expect(query.limit).toBe(10);
     expect(query.offset).toBe(20);

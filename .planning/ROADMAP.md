@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Read Tools** - All navigation and read tools working — agents can fetch projects, boards, tasks, and comments (completed 2026-04-09)
 - [x] **Phase 3: Write Tools** - All mutation tools working — agents can create, update, move, complete tasks and post comments (completed 2026-04-09)
 - [x] **Phase 4: Distribution & Quality** - npm package published, README complete, tests in place (completed 2026-04-09)
-- [ ] **Phase 5: Tech Debt Cleanup** - Close actionable debt from v1.0 milestone audit: remove dead config fields, expand tool-level test coverage
+- [x] **Phase 5: Tech Debt Cleanup** - Close actionable debt from v1.0 milestone audit: remove dead config fields, expand tool-level test coverage (completed 2026-04-09)
 
 ## Phase Details
 
@@ -106,4 +106,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Read Tools | 2/2 | Complete   | 2026-04-09 |
 | 3. Write Tools | 2/2 | Complete   | 2026-04-09 |
 | 4. Distribution & Quality | 3/3 | Complete   | 2026-04-09 |
-| 5. Tech Debt Cleanup | 0/1 | Not Started |  |
+| 5. Tech Debt Cleanup | 1/1 | Complete   | 2026-04-09 |

@@ -16,49 +16,71 @@ import { extractArray, jsonContent, listParamsSchema } from "./_helpers.js";
 interface RawTask {
   id?: string | number;
   title?: string;
-  description?: string;
+  type?: string;
+  parentId?: string | number | null;
   projectId?: string | number;
   boardId?: string | number;
   boardColumnId?: string | number;
-  assigneeId?: string | number;
-  assigneesIds?: Array<string | number>;
+  userId?: string | null;
+  assignees?: Array<string>;
+  authorId?: string | null;
   isCompleted?: boolean;
+  isDeleted?: boolean;
   priority?: number | string;
-  dueDate?: string;
-  createdAt?: string;
+  dateStart?: string | null;
+  dateEnd?: string | null;
+  date?: string | null;
+  tags?: Array<string | number>;
+  updatedAt?: string | null;
   [k: string]: unknown;
 }
 
 interface ShapedTask {
   id: string;
   title: string;
+  type: string | null;
+  parentId: string | null;
   projectId: string | null;
   boardId: string | null;
   boardColumnId: string | null;
+  /** Primary assignee (WEEEK's userId field). */
   assigneeId: string | null;
+  /** All assignees (WEEEK's assignees array — tasks can have multiple). */
+  assigneeIds: string[];
+  authorId: string | null;
   isCompleted: boolean;
   priority: string | null;
-  dueDate: string | null;
-  createdAt: string | null;
+  dateStart: string | null;
+  dateEnd: string | null;
+  tags: string[];
+  updatedAt: string | null;
 }
 
 function shapeTask(raw: RawTask): ShapedTask {
-  const assignee =
-    raw.assigneeId ??
-    (Array.isArray(raw.assigneesIds) && raw.assigneesIds.length > 0
-      ? raw.assigneesIds[0]
-      : null);
+  const assigneeIds = Array.isArray(raw.assignees)
+    ? raw.assignees.map((u) => String(u))
+    : [];
+  const primaryAssignee =
+    (raw.userId ?? null) != null
+      ? String(raw.userId)
+      : assigneeIds[0] ?? null;
   return {
     id: String(raw.id ?? ""),
     title: String(raw.title ?? ""),
+    type: raw.type ?? null,
+    parentId: raw.parentId == null ? null : String(raw.parentId),
     projectId: raw.projectId == null ? null : String(raw.projectId),
     boardId: raw.boardId == null ? null : String(raw.boardId),
     boardColumnId: raw.boardColumnId == null ? null : String(raw.boardColumnId),
-    assigneeId: assignee == null ? null : String(assignee),
+    assigneeId: primaryAssignee,
+    assigneeIds,
+    authorId: raw.authorId == null ? null : String(raw.authorId),
     isCompleted: Boolean(raw.isCompleted),
     priority: raw.priority == null ? null : String(raw.priority),
-    dueDate: raw.dueDate == null ? null : String(raw.dueDate),
-    createdAt: raw.createdAt == null ? null : String(raw.createdAt),
+    dateStart: raw.dateStart ?? null,
+    dateEnd: raw.dateEnd ?? null,
+    tags: Array.isArray(raw.tags) ? raw.tags.map((t) => String(t)) : [],
+    updatedAt: raw.updatedAt ?? null,
   };
 }
 
@@ -87,7 +109,9 @@ const inputSchema = {
   assignee_id: z
     .string()
     .min(1)
-    .describe("Filter to tasks assigned to this user (WEEEK user id).")
+    .describe(
+      "Filter to tasks assigned to this user (WEEEK user UUID). Obtain from weeek_list_workspace_members."
+    )
     .optional(),
   is_completed: z
     .boolean()
@@ -123,7 +147,7 @@ export function registerListTasks(
           projectId: args.project_id,
           boardId: args.board_id,
           boardColumnId: args.column_id,
-          assigneeId: args.assignee_id,
+          userId: args.assignee_id,
           isCompleted: args.is_completed,
           limit: args.limit,
           offset: args.offset,

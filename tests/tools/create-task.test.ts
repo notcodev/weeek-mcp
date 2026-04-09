@@ -10,7 +10,7 @@ type CreateArgs = {
   board_column_id?: string;
   priority?: number;
   assignee_id?: string;
-  due_date?: string;
+  date_end?: string;
 };
 
 type Handler = (args: CreateArgs) => Promise<{
@@ -91,12 +91,13 @@ describe("weeek_create_task tool", () => {
       board_column_id: "col1",
       priority: 3,
       assignee_id: "u1",
-      due_date: "2026-05-01",
+      date_end: "2026-05-01",
     });
 
     expect(postFn).toHaveBeenCalledTimes(1);
     const [path, body] = postFn.mock.calls[0]!;
     expect(path).toBe("/tm/tasks");
+    // WEEEK uses userId (not assigneeId) and dateEnd (not dueDate)
     expect(body).toEqual({
       title: "Ship it",
       projectId: "p1",
@@ -104,8 +105,8 @@ describe("weeek_create_task tool", () => {
       boardId: "b1",
       boardColumnId: "col1",
       priority: 3,
-      assigneeId: "u1",
-      dueDate: "2026-05-01",
+      userId: "u1",
+      dateEnd: "2026-05-01",
     });
   });
 
@@ -124,7 +125,8 @@ describe("weeek_create_task tool", () => {
     expect(body).toEqual({ title: "minimal", projectId: "p1" });
     expect("description" in body).toBe(false);
     expect("boardId" in body).toBe(false);
-    expect("dueDate" in body).toBe(false);
+    expect("dateEnd" in body).toBe(false);
+    expect("userId" in body).toBe(false);
   });
 
   it("unwraps the {task: ...} envelope in the response", async () => {

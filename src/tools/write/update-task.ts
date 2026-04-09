@@ -52,13 +52,13 @@ const inputSchema = {
     .string()
     .min(1)
     .describe(
-      "New assignee WEEEK user ID. Optional. Omit to leave unchanged."
+      "New primary assignee WEEEK user UUID. Optional. Obtain from weeek_list_workspace_members. Omit to leave unchanged."
     )
     .optional(),
-  due_date: z
+  date_end: z
     .string()
     .describe(
-      "New due date in ISO 8601. Optional. Omit to leave unchanged."
+      "New due date in ISO 8601. Optional. Omit to leave unchanged. WEEEK's task model uses dateEnd, not dueDate."
     )
     .optional(),
 };
@@ -80,20 +80,20 @@ export function registerUpdateTask(
       description?: string;
       priority?: number;
       assignee_id?: string;
-      due_date?: string;
+      date_end?: string;
     }) => {
       try {
         const body: Record<string, unknown> = {};
         if (args.title !== undefined) body.title = args.title;
         if (args.description !== undefined) body.description = args.description;
         if (args.priority !== undefined) body.priority = args.priority;
-        if (args.assignee_id !== undefined) body.assigneeId = args.assignee_id;
-        if (args.due_date !== undefined) body.dueDate = args.due_date;
+        if (args.assignee_id !== undefined) body.userId = args.assignee_id;
+        if (args.date_end !== undefined) body.dateEnd = args.date_end;
 
         if (Object.keys(body).length === 0) {
           return toMcpError(
             new Error(
-              "weeek_update_task: at least one editable field must be provided (title, description, priority, assignee_id, or due_date)"
+              "weeek_update_task: at least one editable field must be provided (title, description, priority, assignee_id, or date_end)"
             )
           );
         }

@@ -8,7 +8,7 @@ type UpdateArgs = {
   description?: string;
   priority?: number;
   assignee_id?: string;
-  due_date?: string;
+  date_end?: string;
 };
 
 type Handler = (args: UpdateArgs) => Promise<{
@@ -85,13 +85,14 @@ describe("weeek_update_task tool", () => {
       task_id: "t1",
       title: "Updated",
       assignee_id: "u5",
-      due_date: "2026-12-31",
+      date_end: "2026-12-31",
     });
 
     expect(putFn).toHaveBeenCalledTimes(1);
     const [path, body] = putFn.mock.calls[0]!;
     expect(path).toBe("/tm/tasks/t1");
-    expect(body).toEqual({ title: "Updated", assigneeId: "u5", dueDate: "2026-12-31" });
+    // WEEEK uses userId (not assigneeId) and dateEnd (not dueDate)
+    expect(body).toEqual({ title: "Updated", userId: "u5", dateEnd: "2026-12-31" });
     expect((body as Record<string, unknown>).description).toBeUndefined();
     expect((body as Record<string, unknown>).priority).toBeUndefined();
   });
