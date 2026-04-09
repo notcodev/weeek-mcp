@@ -3,7 +3,6 @@ import {
   loadConfig,
   MissingConfigError,
   DEFAULT_BASE_URL,
-  DEFAULT_LIST_LIMIT,
   DEFAULT_REQUEST_TIMEOUT_MS,
 } from "../src/config.js";
 
@@ -35,7 +34,6 @@ describe("loadConfig", () => {
     const cfg = loadConfig({ WEEEK_API_TOKEN: "tok_123" });
     expect(cfg.token).toBe("tok_123");
     expect(cfg.baseUrl).toBe(DEFAULT_BASE_URL);
-    expect(cfg.defaultListLimit).toBe(DEFAULT_LIST_LIMIT);
     expect(cfg.requestTimeoutMs).toBe(DEFAULT_REQUEST_TIMEOUT_MS);
   });
 

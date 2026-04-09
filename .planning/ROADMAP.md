@@ -13,9 +13,10 @@ Four phases take the project from zero to a published npm package. Phase 1 estab
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Server boots, auth validated, API client ready, logging and error handling established (completed 2026-04-09)
-- [ ] **Phase 2: Read Tools** - All navigation and read tools working — agents can fetch projects, boards, tasks, and comments
+- [x] **Phase 2: Read Tools** - All navigation and read tools working — agents can fetch projects, boards, tasks, and comments (completed 2026-04-09)
 - [x] **Phase 3: Write Tools** - All mutation tools working — agents can create, update, move, complete tasks and post comments (completed 2026-04-09)
-- [ ] **Phase 4: Distribution & Quality** - npm package published, README complete, tests in place
+- [x] **Phase 4: Distribution & Quality** - npm package published, README complete, tests in place (completed 2026-04-09)
+- [ ] **Phase 5: Tech Debt Cleanup** - Close actionable debt from v1.0 milestone audit: remove dead config fields, expand tool-level test coverage
 
 ## Phase Details
 
@@ -81,6 +82,19 @@ Plans:
 - [ ] 04-distribution-quality/04-02-PLAN.md — Tests (vitest config, unit tests for config/errors/WeeekApiClient, mocked tool tests for list_projects + create_task)
 - [ ] 04-distribution-quality/04-03-PLAN.md — Quality polish (tool description audit per Pitfall 4, Zod schema audit, end-to-end npm pack + clean npx smoke test)
 
+### Phase 5: Tech Debt Cleanup
+**Goal**: Close actionable tech debt identified by v1.0 milestone audit — cosmetic + test coverage items. Does NOT include live-API verification items (require real WEEEK credentials, deferred to manual testing).
+**Depends on**: Phase 4
+**Requirements**: (cleanup phase — no new REQ-IDs)
+**Success Criteria**:
+  1. `WeeekConfig` interface has no dead `defaultListLimit`/`maxListLimit` fields; limits flow through module constants only
+  2. Every one of the 12 tools has at least one unit test covering happy path + error path (currently 2/12 have dedicated tests)
+  3. `npm test` passes with all tests green
+  4. `npm run build` + `npm run lint` + `npm run typecheck` pass clean
+**Plans**: 1 plan
+Plans:
+- [ ] 05-tech-debt-cleanup/05-01-PLAN.md — Dead field removal + test coverage expansion
+
 ## Progress
 
 **Execution Order:**
@@ -89,6 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-04-09 |
-| 2. Read Tools | 1/2 | In Progress|  |
+| 2. Read Tools | 2/2 | Complete   | 2026-04-09 |
 | 3. Write Tools | 2/2 | Complete   | 2026-04-09 |
-| 4. Distribution & Quality | 2/3 | In Progress|  |
+| 4. Distribution & Quality | 3/3 | Complete   | 2026-04-09 |
+| 5. Tech Debt Cleanup | 0/1 | Not Started |  |

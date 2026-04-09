@@ -13,8 +13,6 @@ export const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
 export interface WeeekConfig {
   token: string;
   baseUrl: string;
-  defaultListLimit: number;
-  maxListLimit: number;
   requestTimeoutMs: number;
 }
 
@@ -43,8 +41,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): WeeekConfig {
   return {
     token,
     baseUrl: env.WEEEK_API_BASE_URL ?? DEFAULT_BASE_URL,
-    defaultListLimit: DEFAULT_LIST_LIMIT,
-    maxListLimit: MAX_LIST_LIMIT,
     requestTimeoutMs: DEFAULT_REQUEST_TIMEOUT_MS,
   };
 }
