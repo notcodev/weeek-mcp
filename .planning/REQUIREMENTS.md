@@ -50,9 +50,9 @@
 
 ### Quality
 
-- [ ] **QUAL-01**: Каждый тул имеет качественное описание (когда использовать, чем отличается от похожих)
-- [ ] **QUAL-02**: Zod-схемы для валидации входных параметров всех тулов
-- [ ] **QUAL-03**: Живые тесты против WEEEK API (или мокнутые интеграционные тесты)
+- [x] **QUAL-01**: Каждый тул имеет качественное описание (когда использовать, чем отличается от похожих)
+- [x] **QUAL-02**: Zod-схемы для валидации входных параметров всех тулов
+- [x] **QUAL-03**: Живые тесты против WEEEK API (или мокнутые интеграционные тесты)
 
 ## v2 Requirements
 
@@ -117,9 +117,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIST-03 | Phase 4 | Complete |
 | DIST-04 | Phase 4 | Complete |
 | DIST-05 | Phase 4 | Complete |
-| QUAL-01 | Phase 4 | Pending |
-| QUAL-02 | Phase 4 | Pending |
-| QUAL-03 | Phase 4 | Pending |
+| QUAL-01 | Phase 4 | Complete |
+| QUAL-02 | Phase 4 | Complete |
+| QUAL-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total
