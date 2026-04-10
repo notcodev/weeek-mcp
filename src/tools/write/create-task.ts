@@ -108,12 +108,6 @@ export function registerCreateTask(
 
         const raw = await client.post<unknown>("/tm/tasks", body);
         const task = unwrapTask(raw);
-        // Defensive: strip embedded comments if the create response includes them
-        if (task && typeof task === "object" && "comments" in (task as object)) {
-          const { comments: _dropped, ...rest } = task as Record<string, unknown>;
-          void _dropped;
-          return jsonContent(rest);
-        }
         return jsonContent(task);
       } catch (err) {
         return toMcpError(err);

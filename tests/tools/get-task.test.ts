@@ -53,11 +53,10 @@ describe("weeek_get_task tool", () => {
     expect(fake.getName()).toBe("weeek_get_task");
   });
 
-  it("description references weeek_list_task_comments for keeping responses small", () => {
+  it("description references weeek_list_tasks", () => {
     const client = makeFakeClient(async () => ({ task: { id: "t1" } }));
     registerGetTask(fake.server, client);
     const desc = fake.getDescription();
-    expect(desc).toMatch(/weeek_list_task_comments/);
     expect(desc).toMatch(/weeek_list_tasks/);
   });
 
@@ -80,22 +79,6 @@ describe("weeek_get_task tool", () => {
     expect(payload.id).toBe("task-99");
     expect(payload.title).toBe("Ship it");
     expect("comments" in payload).toBe(false);
-  });
-
-  it("strips embedded comments from the task response", async () => {
-    const client = makeFakeClient(async () => ({
-      task: {
-        id: "t1",
-        title: "Has comments",
-        comments: [{ id: "c1", text: "should be stripped" }],
-      },
-    }));
-    registerGetTask(fake.server, client);
-
-    const res = await fake.getHandler()({ task_id: "t1" });
-    const payload = JSON.parse(res.content[0]!.text) as Record<string, unknown>;
-    expect("comments" in payload).toBe(false);
-    expect(payload.id).toBe("t1");
   });
 
   it("returns isError:true on WeeekApiError, does not throw", async () => {

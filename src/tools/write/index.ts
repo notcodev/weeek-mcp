@@ -5,9 +5,9 @@
  * clients (Claude Desktop, Cursor) can require user confirmation for mutations
  * while auto-approving reads.
  *
- * Phase 3 complete: 5 write tools registered.
+ * 4 write tools registered:
  *   Task authoring (Plan 03-01): create_task, update_task
- *   Task lifecycle (Plan 03-02): move_task, complete_task, create_task_comment
+ *   Task lifecycle (Plan 03-02): move_task, complete_task
  */
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { WeeekApiClient } from "../../client/weeek-api-client.js";
@@ -16,7 +16,6 @@ import { registerCreateTask } from "./create-task.js";
 import { registerUpdateTask } from "./update-task.js";
 import { registerMoveTask } from "./move-task.js";
 import { registerCompleteTask } from "./complete-task.js";
-import { registerCreateTaskComment } from "./create-task-comment.js";
 
 export function registerWriteTools(
   server: McpServer,
@@ -26,10 +25,9 @@ export function registerWriteTools(
   registerCreateTask(server, client);
   registerUpdateTask(server, client);
 
-  // Task lifecycle + comments (Plan 03-02)
+  // Task lifecycle (Plan 03-02)
   registerMoveTask(server, client);
   registerCompleteTask(server, client);
-  registerCreateTaskComment(server, client);
 
-  logger.info("registerWriteTools: 5 write tools registered (Phase 3 complete)");
+  logger.info("registerWriteTools: 4 write tools registered");
 }
