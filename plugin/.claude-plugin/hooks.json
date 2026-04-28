@@ -4,7 +4,10 @@
       {
         "matcher": "startup|resume",
         "hooks": [
-          { "type": "command", "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/detect-task-on-session.mjs" }
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/detect-task-on-session.mjs"
+          }
         ]
       }
     ],
@@ -12,7 +15,10 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/detect-task-on-commit.mjs" }
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/detect-task-on-commit.mjs"
+          }
         ]
       }
     ]
