@@ -1,10 +1,12 @@
 # claude-weeek
 
-[Claude Code](https://claude.com/claude-code) plugin for the [WEEEK](https://weeek.net) task tracker. Gives Claude direct read/write access to WEEEK projects, boards, tasks, and comments — no context switching.
+[Claude Code](https://claude.com/claude-code) plugin for the [WEEEK](https://weeek.net) task tracker. Gives Claude direct read/write access to WEEEK projects, boards, and tasks — no context switching.
 
 ## Features
 
-- **12 tools** — 7 read (projects, boards, columns, tasks, comments) + 5 write (create/update/move/complete tasks, post comments)
+- **11 MCP tools** — 7 read (projects, boards, columns, tasks) + 4 write (create/update/move/complete tasks)
+- **5 skills** — `/weeek-start`, `/weeek-today`, `/weeek-standup`, `/weeek-advance`, `/weeek-context`
+- **2 passive hooks** — auto-detect a WEEEK task ID from the current branch (SessionStart) or commit message (PostToolUse), inject context for the agent without ever calling the API
 - **Read/write split** — tools are grouped so reads can be auto-approved while writes stay gated
 - **Token auth** — single `WEEEK_API_TOKEN` env var, never logged
 - **Safe defaults** — list tools paginate (default 20, max 50) so responses stay under the 25k token MCP limit
@@ -57,7 +59,6 @@ All tools are prefixed `weeek_`. Read tools are side-effect free and safe for au
 | `weeek_list_board_columns` | List columns (statuses) inside a board. Required before moving tasks. |
 | `weeek_list_tasks` | List tasks with filters (project, board, column, assignee, completion) and pagination. |
 | `weeek_get_task` | Get full details of a single task by ID. |
-| `weeek_list_task_comments` | List comments on a task. |
 
 ### Write tools
 
@@ -67,7 +68,54 @@ All tools are prefixed `weeek_`. Read tools are side-effect free and safe for au
 | `weeek_update_task` | Edit fields (title, description, priority, assignee, due date) of an existing task. |
 | `weeek_move_task` | Move a task to a different board column (status change). |
 | `weeek_complete_task` | Mark a task complete, or reopen a completed task. |
-| `weeek_create_task_comment` | Post a comment on a task. |
+
+## Configuration
+
+The plugin works out of the box. To customise behaviour for your team's process, drop a `.weeek.json` at the root of your repo. All fields are optional.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/notcodev/claude-weeek/main/plugin/config.schema.json",
+  "taskIdPatterns": ["WEEEK-(\\d+)"],
+  "branchTemplate": "feature/WEEEK-{id}-{slug}",
+  "defaultBoardId": 567,
+  "defaultProjectId": 89,
+  "statusHints": {
+    "inProgress": ["In Progress", "Doing"],
+    "review":     ["Review", "Code Review"],
+    "testing":    ["Testing", "QA"],
+    "done":       ["Done", "Completed"]
+  }
+}
+```
+
+| Field | Purpose |
+|-------|---------|
+| `taskIdPatterns` | Regex list (capture group 1 = numeric ID) used by SessionStart and PostToolUse hooks to extract task IDs from branch names and commit messages. **Replaces** the built-in defaults — does not extend. |
+| `branchTemplate` | Template used by `/weeek-start` to suggest branch names. Placeholders: `{id}`, `{slug}`. |
+| `defaultBoardId` / `defaultProjectId` | Skills use these as defaults instead of asking. |
+| `statusHints` | Maps workflow stages to column-name candidates. The `/weeek-advance` skill uses these to label the menu of next stages. Multi-stage workflows (In Progress → Review → Testing → Done) are first-class. |
+
+The `$schema` URL provides autocomplete and validation in VS Code, JetBrains IDEs, and Cursor.
+
+## Skills
+
+| Skill | What it does |
+|-------|--------------|
+| `/weeek-start <id>` | Pull task context, suggest branch, optionally move to In Progress. |
+| `/weeek-today` | Your tasks today, grouped by project and column. |
+| `/weeek-standup` | Yesterday / Today / Blockers from recent commits + WEEEK status. |
+| `/weeek-advance` | Move task to next workflow stage. Supports multi-stage boards. |
+| `/weeek-context <id>` | Read-only task summary. |
+
+## Hooks
+
+The plugin ships two passive hooks that never block tool calls:
+
+- **SessionStart** — if your branch references a WEEEK task, the agent gets a hint to consider `weeek_get_task`.
+- **PostToolUse on `git commit`** — if a commit message references a WEEEK task, the agent gets a hint about `/weeek-advance`.
+
+Both hooks are silent until they detect a task ID. Errors never surface.
 
 ## Safety
 

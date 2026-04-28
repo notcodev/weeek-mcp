@@ -2,7 +2,7 @@
 
 **WEEEK MCP Server**
 
-MCP (Model Context Protocol) сервер для интеграции AI-агентов с таск-трекером WEEEK. Позволяет кодинг-агентам (Claude Desktop, Cursor, и др.) читать задачи, обновлять статусы, оставлять комментарии и навигировать по проектам/доскам через WEEEK Public API. Распространяется как npm-пакет (`claude-weeek`), запускается через `npx`.
+MCP (Model Context Protocol) сервер для интеграции AI-агентов с таск-трекером WEEEK. Позволяет кодинг-агентам (Claude Code и др.) читать задачи, обновлять статусы и навигировать по проектам/доскам через WEEEK Public API. Распространяется как npm-пакет (`claude-weeek`), запускается через `npx`. Также включает Claude Code plugin layer — skills и hooks под `plugin/`, см. секцию "Plugin layer" ниже.
 
 **Core Value:** Кодинг-агенты получают прямой доступ к контексту задач в WEEEK — без переключения контекста разработчиком.
 
@@ -61,6 +61,18 @@ Use the native `fetch` (Node 20+). Zero deps; WEEEK API is a simple Bearer-token
 | CommonJS (`require`, `module.exports`) | MCP SDK is ESM-only; mixing with CJS causes `ERR_REQUIRE_ESM`. | ESM throughout. |
 | SSE/HTTP transport | Out of scope. Adds server infra + session management. | `StdioServerTransport`. |
 | `ts-node` | Deprecated for ESM; quirks with NodeNext. | `tsx`. |
+
+## Plugin layer
+
+Beyond the MCP server, the plugin ships skills and hooks under `plugin/`:
+
+- `plugin/skills/<name>/SKILL.md` — five skills (`weeek-start`, `weeek-today`, `weeek-standup`, `weeek-advance`, `weeek-context`).
+- `plugin/hooks/*.mjs` — two passive hooks (SessionStart, PostToolUse on `git commit`) registered via `plugin/.claude-plugin/hooks.json`. Hooks never call the WEEEK API; they only inject context for the agent.
+- `plugin/lib/task-detector.mjs` — zero-dependency regex detector shared by both hooks. Built-in patterns handle `WEEEK-N`, `task-N`, `#N`, and bare `N-slug`. Per-repo overrides live in `.weeek.json` (validated by `plugin/config.schema.json`).
+
+A planned `weeek-log` skill (recording progress as task comments) was dropped after the WEEEK Public API was found not to expose comment endpoints. See the spec for detail.
+
+See `docs/superpowers/specs/2026-04-28-weeek-skills-and-hooks-design.md` for the full design.
 
 ## Conventions
 
