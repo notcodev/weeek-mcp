@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/notcodev/claude-weeek/main/plugin/config.schema.json",
+  "title": "claude-weeek per-repo configuration",
+  "description": "Drives skill and hook behaviour for the claude-weeek Claude Code plugin. All fields are optional. Place this file at the root of any repo that should override the plugin's built-in defaults.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "taskIdPatterns": {
+      "type": "array",
+      "description": "Regex patterns (as strings) used to extract a numeric WEEEK task ID from branch names and commit messages. The first pattern that matches wins. Capture group 1 must contain the numeric ID. When set, this REPLACES the plugin's built-in defaults — it does not extend them.",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "branchTemplate": {
+      "type": "string",
+      "description": "Branch name template used by the weeek-start skill. Placeholders: {id} = numeric task ID, {slug} = lowercase kebab-cased title.",
+      "examples": ["feature/WEEEK-{id}-{slug}", "task-{id}-{slug}"]
+    },
+    "defaultBoardId": {
+      "type": ["integer", "string"],
+      "description": "Optional default board ID. Skills use this when a task does not have a boardId or when the user invokes a skill that operates on the active board."
+    },
+    "defaultProjectId": {
+      "type": ["integer", "string"],
+      "description": "Optional default project ID. Skills like weeek-today scope queries to this project when set."
+    },
+    "statusHints": {
+      "type": "object",
+      "description": "Maps workflow stage names to lists of column-name candidates that match. Skills compare against these case-insensitively. All sub-fields optional. Multi-stage workflows (In Progress → Review → Testing → Done) are first-class — populate review/testing only if your boards use those stages.",
+      "additionalProperties": false,
+      "properties": {
+        "inProgress": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "review":     { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "testing":    { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "done":       { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}
