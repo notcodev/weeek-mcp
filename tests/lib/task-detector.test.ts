@@ -76,6 +76,28 @@ describe('task-detector', () => {
       expect(() => loadConfig(tmp)).not.toThrow()
       expect(loadConfig(tmp)).toBeNull()
     })
+
+    it('does not search above home directory', () => {
+      // Create a fake home that is a subdirectory of the real tmp dir.
+      // Place .weeek.json ABOVE fakeHome (at tmp root) to prove it's not found.
+      const fakeHome = join(tmp, 'home')
+      const projectDir = join(fakeHome, 'project')
+      mkdirSync(projectDir, { recursive: true })
+      // Place a config above fakeHome — should NOT be discovered.
+      writeFileSync(
+        join(tmp, '.weeek.json'),
+        JSON.stringify({ branchTemplate: 'should-not-load' }),
+      )
+
+      const originalHome = process.env.HOME
+      try {
+        process.env.HOME = fakeHome
+        // loadConfig uses homedir() which reads HOME on POSIX
+        expect(loadConfig(projectDir)).toBeNull()
+      } finally {
+        process.env.HOME = originalHome
+      }
+    })
   })
 
   describe('getPatterns override semantics', () => {

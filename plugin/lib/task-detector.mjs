@@ -6,7 +6,6 @@ import process from 'node:process'
 
 const DEFAULT_PATTERNS = [
   /\bWEEEK[-_/](\d+)\b/i,
-  /\bweeek[-_/](\d+)\b/i,
   /\btask[-_/](\d+)\b/i,
   /^(\d{2,})[-_/]/,
   /#(\d+)\b/,
@@ -37,8 +36,9 @@ export function loadConfig(cwd) {
     ) {
       return null
     }
+    if (dir === home) return null
     const parent = dirname(dir)
-    if (parent === dir || parent === home) return null
+    if (parent === dir) return null
     dir = parent
   }
 }
