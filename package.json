@@ -12,15 +12,15 @@
     "LICENSE",
     "CHANGELOG.md"
   ],
-  "author": "Makar Glavanar",
+  "author": "Erik Codev <hello@notco.dev>",
   "license": "MIT",
-  "homepage": "https://github.com/makarglavanar/weeek-mcp#readme",
+  "homepage": "https://github.com/notcodev/weeek-mcp#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/makarglavanar/weeek-mcp.git"
+    "url": "git+https://github.com/notcodev/weeek-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/makarglavanar/weeek-mcp/issues"
+    "url": "https://github.com/notcodev/weeek-mcp/issues"
   },
   "keywords": [
     "mcp",
