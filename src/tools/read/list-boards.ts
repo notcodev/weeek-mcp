@@ -1,39 +1,46 @@
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+
 /**
  * weeek_list_boards — NAV-03
  *
  * Lists boards within a WEEEK project. Requires project_id filter.
  * A board is a container of columns (statuses) and tasks.
  */
-import { z } from "zod";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { WeeekApiClient } from "../../client/weeek-api-client.js";
-import { toMcpError } from "../../errors.js";
-import { logger } from "../../logger.js";
-import { extractArray, jsonContent, listParamsSchema } from "./_helpers.js";
+import { z } from 'zod'
+
+import type { WeeekApiClient } from '../../client/weeek-api-client.js'
+
+import { toMcpError } from '../../errors.js'
+import { logger } from '../../logger.js'
+import {
+  extractArray,
+  jsonContent,
+  listParamsSchema,
+} from './_helpers.js'
 
 interface RawBoard {
-  id?: string | number;
-  name?: string;
-  title?: string;
-  projectId?: string | number;
-  type?: string;
-  [k: string]: unknown;
+  id?: number | string
+  name?: string
+  projectId?: number | string
+  title?: string
+  type?: string
+  [k: string]: unknown
 }
 
 interface ShapedBoard {
-  id: string;
-  name: string;
-  projectId: string;
-  type: string | null;
+  id: string
+  name: string
+  projectId: string
+  type: string | null
 }
 
 function shapeBoard(raw: RawBoard): ShapedBoard {
   return {
-    id: String(raw.id ?? ""),
-    name: String(raw.name ?? raw.title ?? ""),
-    projectId: String(raw.projectId ?? ""),
+    id: String(raw.id ?? ''),
+    name: String(raw.name ?? raw.title ?? ''),
+    projectId: String(raw.projectId ?? ''),
     type: raw.type == null ? null : String(raw.type),
-  };
+  }
 }
 
 const inputSchema = {
@@ -41,35 +48,41 @@ const inputSchema = {
     .string()
     .min(1)
     .describe(
-      "WEEEK project ID whose boards to list. Obtain from weeek_list_projects. Required."
+      'WEEEK project ID whose boards to list. Obtain from weeek_list_projects. Required.',
     ),
   ...listParamsSchema,
-};
+}
 
 export function registerListBoards(
   server: McpServer,
-  client: WeeekApiClient
+  client: WeeekApiClient,
 ): void {
   server.registerTool(
-    "weeek_list_boards",
+    'weeek_list_boards',
     {
       description:
-        "List all boards inside a WEEEK project. Use this AFTER weeek_list_projects to discover kanban boards within a project. A board is a container of columns (statuses) and tasks. Returns array of {id, name, projectId, type}. To see the columns/statuses of a specific board, use weeek_list_board_columns next. The project_id parameter must come from weeek_list_projects — do not guess.",
+        'List all boards inside a WEEEK project. Use this AFTER weeek_list_projects to discover kanban boards within a project. A board is a container of columns (statuses) and tasks. Returns array of {id, name, projectId, type}. To see the columns/statuses of a specific board, use weeek_list_board_columns next. The project_id parameter must come from weeek_list_projects — do not guess.',
       inputSchema,
     },
-    async (args: { project_id: string; limit?: number; offset?: number }) => {
+    async (args: {
+      project_id: string
+      limit?: number
+      offset?: number
+    }) => {
       try {
-        const raw = await client.get<unknown>("/tm/boards", {
+        const raw = await client.get<unknown>('/tm/boards', {
           projectId: args.project_id,
           limit: args.limit,
           offset: args.offset,
-        });
-        const boards = extractArray<RawBoard>(raw, "boards").map(shapeBoard);
-        return jsonContent({ boards, count: boards.length });
+        })
+        const boards = extractArray<RawBoard>(raw, 'boards').map(
+          shapeBoard,
+        )
+        return jsonContent({ boards, count: boards.length })
       } catch (err) {
-        return toMcpError(err);
+        return toMcpError(err)
       }
-    }
-  );
-  logger.info("Registered tool: weeek_list_boards");
+    },
+  )
+  logger.info('Registered tool: weeek_list_boards')
 }

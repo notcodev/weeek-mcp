@@ -14,51 +14,54 @@
  * console.log anywhere in this file — stdout is the JSON-RPC channel.
  */
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import process from 'node:process'
 
-import { loadConfig, MissingConfigError } from "./config.js";
-import { WeeekApiClient } from "./client/weeek-api-client.js";
-import { registerReadTools } from "./tools/read/index.js";
-import { registerWriteTools } from "./tools/write/index.js";
-import { logger } from "./logger.js";
+import { WeeekApiClient } from './client/weeek-api-client.js'
+import { loadConfig, MissingConfigError } from './config.js'
+import { logger } from './logger.js'
+import { registerReadTools } from './tools/read/index.js'
+import { registerWriteTools } from './tools/write/index.js'
 
-const SERVER_NAME = "weeek-mcp-server";
-const SERVER_VERSION = "0.1.0";
+const SERVER_NAME = 'weeek-mcp-server'
+const SERVER_VERSION = '0.1.0'
 
 async function main(): Promise<void> {
-  let config;
+  let config
   try {
-    config = loadConfig();
+    config = loadConfig()
   } catch (err) {
     if (err instanceof MissingConfigError) {
       // Write the actionable message to stderr and exit cleanly (non-zero).
       // Never write to stdout — stdio transport would corrupt the JSON-RPC channel.
-      logger.error(err.message);
-      process.exit(1);
+      logger.error(err.message)
+      process.exit(1)
     }
-    throw err;
+    throw err
   }
 
   const client = new WeeekApiClient(config.token, {
     baseUrl: config.baseUrl,
     timeoutMs: config.requestTimeoutMs,
-  });
+  })
 
   const server = new McpServer({
     name: SERVER_NAME,
     version: SERVER_VERSION,
-  });
+  })
 
-  registerReadTools(server, client);
-  registerWriteTools(server, client);
+  registerReadTools(server, client)
+  registerWriteTools(server, client)
 
-  const transport = new StdioServerTransport();
+  const transport = new StdioServerTransport()
 
   // Log before connect — once connected, the process blocks on stdin.
-  logger.info(`${SERVER_NAME} v${SERVER_VERSION} starting on stdio transport`);
+  logger.info(
+    `${SERVER_NAME} v${SERVER_VERSION} starting on stdio transport`,
+  )
 
-  await server.connect(transport);
+  await server.connect(transport)
 }
 
 // Top-level unhandled error guard: log to stderr and exit non-zero.
@@ -66,9 +69,11 @@ async function main(): Promise<void> {
 // (which is acceptable but less friendly than a tagged log line).
 main().catch((err: unknown) => {
   if (err instanceof Error) {
-    logger.error(`Fatal startup error: ${err.message}`, { stack: err.stack });
+    logger.error(`Fatal startup error: ${err.message}`, {
+      stack: err.stack,
+    })
   } else {
-    logger.error(`Fatal startup error: ${String(err)}`);
+    logger.error(`Fatal startup error: ${String(err)}`)
   }
-  process.exit(1);
-});
+  process.exit(1)
+})

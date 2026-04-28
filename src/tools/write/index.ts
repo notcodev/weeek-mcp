@@ -9,25 +9,27 @@
  *   Task authoring (Plan 03-01): create_task, update_task
  *   Task lifecycle (Plan 03-02): move_task, complete_task
  */
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { WeeekApiClient } from "../../client/weeek-api-client.js";
-import { logger } from "../../logger.js";
-import { registerCreateTask } from "./create-task.js";
-import { registerUpdateTask } from "./update-task.js";
-import { registerMoveTask } from "./move-task.js";
-import { registerCompleteTask } from "./complete-task.js";
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+
+import type { WeeekApiClient } from '../../client/weeek-api-client.js'
+
+import { logger } from '../../logger.js'
+import { registerCompleteTask } from './complete-task.js'
+import { registerCreateTask } from './create-task.js'
+import { registerMoveTask } from './move-task.js'
+import { registerUpdateTask } from './update-task.js'
 
 export function registerWriteTools(
   server: McpServer,
-  client: WeeekApiClient
+  client: WeeekApiClient,
 ): void {
   // Task authoring (Plan 03-01)
-  registerCreateTask(server, client);
-  registerUpdateTask(server, client);
+  registerCreateTask(server, client)
+  registerUpdateTask(server, client)
 
   // Task lifecycle (Plan 03-02)
-  registerMoveTask(server, client);
-  registerCompleteTask(server, client);
+  registerMoveTask(server, client)
+  registerCompleteTask(server, client)
 
-  logger.info("registerWriteTools: 4 write tools registered");
+  logger.info('registerWriteTools: 4 write tools registered')
 }

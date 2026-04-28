@@ -1,18 +1,9 @@
 {
   "name": "weeek-mcp-server",
-  "version": "0.1.0",
-  "description": "MCP server for WEEEK task tracker integration — read/write tools for AI coding agents",
   "type": "module",
+  "version": "0.1.0",
   "packageManager": "pnpm@10.27.0",
-  "bin": {
-    "weeek-mcp-server": "./dist/index.js"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md"
-  ],
+  "description": "MCP server for WEEEK task tracker integration — read/write tools for AI coding agents",
   "author": "Erik Codev <hello@notco.dev>",
   "license": "MIT",
   "homepage": "https://github.com/notcodev/weeek-mcp#readme",
@@ -34,6 +25,18 @@
     "cursor",
     "llm-tools"
   ],
+  "bin": {
+    "weeek-mcp-server": "./dist/index.js"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "postbuild": "chmod +x dist/index.js",
@@ -46,9 +49,6 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "prepublishOnly": "pnpm run build"
-  },
-  "engines": {
-    "node": ">=20.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
