@@ -9,10 +9,7 @@
     "url": "https://github.com/notcodev"
   },
   "homepage": "https://github.com/notcodev/claude-weeek#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/notcodev/claude-weeek.git"
-  },
+  "repository": "https://github.com/notcodev/claude-weeek.git",
   "license": "MIT",
   "keywords": ["mcp", "weeek", "task-tracker", "claude"]
 }
